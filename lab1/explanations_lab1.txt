@@ -1,0 +1,11 @@
+#Benjamin Cheng, 1004838045, benjamin.cheng@mail.utoronto.ca
+
+target1:
+The strcpy in foo() will buffer overflow `buf` if given argv[1] with >272 chars.
+To exploit this, the location of the return address of lab_main() relative to the
+beginning of `buf` was found to be 0x158. A shellcode is placed at the start of
+`buf`, which is then followed with arbitrary padding bytes until the 0x158-th
+element, where the address of `buf` is placed. This address was found to be
+0x40A4FD70 on ECF lab computers, but on other systems a lower address was found.
+Thus NOP bytes were added to the beginning of `buf` to make the exploit more
+portable.
