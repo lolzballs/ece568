@@ -9,3 +9,12 @@ element, where the address of `buf` is placed. This address was found to be
 0x40A4FD70 on ECF lab computers, but on other systems a lower address was found.
 Thus NOP bytes were added to the beginning of `buf` to make the exploit more
 portable.
+
+target2:
+foo() allows the input string to overflow buf by 20 bytes. We cannot directly
+modify the return address since it is located at 36 bytes past the end of buf.
+len resides at 16 to 20 bytes past the end of buf. Thus we can arbitarily set
+len using our attack buffer to increase the iterations of the loop. j is also
+located on the stack, so we set j to 0x127 to reach the return address. This
+attack buffer contains NULL bytes, which are dealt with by passing input following
+the NULLs in new strings in envp.
