@@ -18,3 +18,11 @@ arbitarily set len using our attack buffer to increase the iterations of the
 loop. j is also located on the stack, so we set j to 0x127 to reach the return
 address. This attack buffer contains NULL bytes, which are dealt with by passing
 input following the NULLs in new strings in envp.
+
+target3:
+bar() copies the a maximum of 103 bytes from user-supplied input to &targ[12].
+Since buf/targ only has 67 bytes, there is an overflow of 48 bytes. buf is in
+the stack frame of foo(), so we target the return address in that function
+instead, which is at &buf[88]. This is within our overflow-able range so it is
+straight forward to override the return address with &buf, where the shellcode
+is located.
