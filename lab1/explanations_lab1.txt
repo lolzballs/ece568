@@ -35,18 +35,14 @@ of buf, we need to modify the parameters of for-loop in order to write to the
 return address. Specifically, we modified the variables i and len to write 
 past 231th byte of buf. Modifying variables i and len was possible because 
 the length of buf was 203 and foo() copied 231 characters. Also, it was possible
-because i and len were located at &buf[216] and &buf[220] respectively. 
+because i and len were located at &buf[216] and &buf[220] respectively.
 
 target5:
-foo() uses snprintf() to copy 512 bytes of &formatString[58] to buf. 
-We put the address of the return address at the front of formatString and put 
-shellcode at the end. We put the actual "format string" at &formatString[58] 
-since snprintf() starts copying from there. In the "format string," we first 
-put three %llx to make current argument pointer point to the address 
-of return address stored in formatString. By controlling the number of 
-printed characters and using %hhn, we wrote the address of our shellcode to 
-the address of return address. 
-
-
-
-
+foo() copies 217 bytes starting from argv[1] into the formatString buffer with
+memcpy(), meaning we can add extra NULL-bytes through envp. In our format string
+attack, we put the variadic arguments (%n write locations, paddings) at the
+start of formatString, and the shellcode at the end. At &formatString[58], we
+first put three %llx to make current argument pointer point to the beginning of
+formatString. By printing out padding bytes in the arguments, we control the
+number of characters written out by %hhn to write the address of the shellcode
+to the return address.
