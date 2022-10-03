@@ -46,3 +46,12 @@ first put three %llx to make current argument pointer point to the beginning of
 formatString. By printing out padding bytes in the arguments, we control the
 number of characters written out by %hhn to write the address of the shellcode
 to the return address.
+
+target6:
+The CHUNK used by tmalloc is part of p, which is user-controlled. The left and
+right pointers for q is located at &p[72] and &p[76], which is within the 130
+byte strncpy limit. These pointers are respectively set to p and the saved rip
+address from foo(), so that the leftwards consolidation will set the return
+address to p. We construct p with the shellcode at the beginning, preceeded by
+a fake CHUNK. During the consolidate operation the left pointer will be untouched,
+so the machine code for "jmp 8" is put there to jump to the real shellcode.
