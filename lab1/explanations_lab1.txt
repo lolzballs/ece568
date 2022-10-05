@@ -21,7 +21,7 @@ address. This attack buffer contains NULL bytes, which are dealt with by passing
 input following the NULLs in new strings in envp.
 
 target3:
-bar() copies a maximum of 103 bytes from user-supplied input to &targ[12].
+bar() copies a maximum of 104 bytes from user-supplied input to &targ[12].
 Since buf/targ only has 67 bytes, there is an overflow of 48 bytes. buf is in
 the stack frame of foo(), so we target the return address in that function
 instead, which is at &buf[88]. This is within our overflow-able range so it is
@@ -30,7 +30,7 @@ is located.
 
 target4:
 foo() copies the input string to buf up to 231 characters, which is specified 
-by the variable len. Since the return address is located after the 231th byte
+by the variable len. Since the return address is located after the 231st byte
 of buf, we need to modify the parameters of for-loop in order to write to the 
 return address. Specifically, we modified the variables i and len to write 
 past 231th byte of buf. Modifying variables i and len was possible because 
