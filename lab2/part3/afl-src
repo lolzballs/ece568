@@ -1,0 +1,2 @@
+export PATH=$PATH:$PWD/../AFLplusplus
+export ANTLR_JAR_LOCATION=$PWD/grammar/antlr-4.8-complete.jar
