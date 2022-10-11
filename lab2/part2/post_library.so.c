@@ -73,7 +73,23 @@
 #include <string.h>
 #include <stdint.h>
 #include <arpa/inet.h>
+#include <netinet/ip.h>
 
+static uint16_t compute_checksum(const struct iphdr *header) {
+  size_t header_len = header->ihl;
+
+  uint32_t sum = 0;
+  uint16_t *words = (uint16_t *) header;
+  for (size_t i = 0; i < header_len * 2; i++) {
+	sum += ntohs(words[i]);
+  }
+
+  while (sum >> 16) {
+	sum = (sum & 0xffff) + (sum >> 16);
+  }
+
+  return ~htons(sum);
+}
 
 /* The actual postprocessor routine called by afl-fuzz: */
 
@@ -100,6 +116,10 @@ const unsigned char* afl_postprocess(const unsigned char* in_buf,
   memcpy(new_buf, in_buf, *len);
   
   /* Write your code here */
+  struct iphdr *header = (struct iphdr *) new_buf;
+  header->check = 0;
+  uint16_t checksum = compute_checksum(header);
+  header->check = checksum;
 
   return new_buf;
 
