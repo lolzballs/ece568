@@ -2152,31 +2152,34 @@ static void dump_request(void){
     struct sockaddr_in server_addr;
     unsigned char *buf;
     ssize_t len;
+
     __AFL_INIT();
     buf = __AFL_FUZZ_TESTCASE_BUF;
 
     server_addr.sin_family      = AF_INET;
     server_addr.sin_port        = htons(8080);
-    server_addr.sin_addr.s_addr = htonl(0x7f000001);
+    server_addr.sin_addr.s_addr = INADDR_LOOPBACK;
 
     usleep(100000);
-	  while(__AFL_LOOP(1000)){
-      if (socket_desc = socket(AF_INET, SOCK_STREAM, 0) < 0) {
-        perror("Socket()");
-        exit(1);
-      }
- 
-       if (connect(socket_desc, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        perror("Connect()");
-        exit(2);
-      }
-  
-      if (send(socket_desc, __AFL_FUZZ_TESTCASE_BUF, __AFL_FUZZ_TESTCASE_LEN, 0) < 0) {
-        perror("Send()");
-        exit(3);
+    while(__AFL_LOOP(1000)) {
+      len = __AFL_FUZZ_TESTCASE_LEN;
+
+      if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket");
+        exit(EXIT_FAILURE);
       }
 
+      if (connect(socket_desc, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+        perror("connect");
+        exit(EXIT_FAILURE);
+      }
 
+      if (send(socket_desc, buf, len, 0) < 0) {
+        perror("send");
+        exit(EXIT_FAILURE);
+      }
+
+      close(socket_desc);
     }
     usleep(100000);
     exit(0);
