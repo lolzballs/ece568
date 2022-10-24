@@ -2124,8 +2124,8 @@ static void netIfaceUp(const char *ifacename)
 
 void unsh(void)
 {
-    // unshare(CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS | CLONE_FILES | CLONE_FS);
-    // netIfaceUp("lo");
+    unshare(CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS | CLONE_FILES | CLONE_FS);
+    netIfaceUp("lo");
 }
 
 #ifndef __AFL_FUZZ_TESTCASE_LEN
@@ -2153,7 +2153,7 @@ static void dump_request(void){
     unsigned char *buf;
     ssize_t len;
 
-	unsigned char response[4096];
+    unsigned char response[4096];
 
     __AFL_INIT();
     buf = __AFL_FUZZ_TESTCASE_BUF;
@@ -2181,15 +2181,15 @@ static void dump_request(void){
             exit(EXIT_FAILURE);
         }
 
-        /* give server enough time to respond */
-        usleep(100);
+        if (shutdown(socket_desc, SHUT_WR) < 0) {
+            perror("shutdown");
+            exit(EXIT_FAILURE);
+        }
 
-        fcntl(socket_desc, F_SETFL, O_NONBLOCK);
-
-        /* read until EOF or EAGAIN happens */
+        /* read until EOF happens */
         while (1) {
             int res = read(socket_desc, response, sizeof(response));
-            if (res == 0 || (res == -1 && errno == EAGAIN)) {
+            if (res == 0) {
                 break;
             }
         }
