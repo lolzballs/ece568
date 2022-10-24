@@ -2158,28 +2158,28 @@ static void dump_request(void){
 
     server_addr.sin_family      = AF_INET;
     server_addr.sin_port        = htons(8080);
-    server_addr.sin_addr.s_addr = INADDR_LOOPBACK;
+    server_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
     usleep(100000);
     while(__AFL_LOOP(1000)) {
-      len = __AFL_FUZZ_TESTCASE_LEN;
+        len = __AFL_FUZZ_TESTCASE_LEN;
 
-      if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket");
-        exit(EXIT_FAILURE);
-      }
+        if ((socket_desc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+            perror("socket");
+            exit(EXIT_FAILURE);
+        }
 
-      if (connect(socket_desc, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-        perror("connect");
-        exit(EXIT_FAILURE);
-      }
+        if (connect(socket_desc, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+            perror("connect");
+            exit(EXIT_FAILURE);
+        }
 
-      if (send(socket_desc, buf, len, 0) < 0) {
-        perror("send");
-        exit(EXIT_FAILURE);
-      }
+        if (send(socket_desc, buf, len, 0) < 0) {
+            perror("send");
+            exit(EXIT_FAILURE);
+        }
 
-      close(socket_desc);
+        close(socket_desc);
     }
     usleep(100000);
     exit(0);
