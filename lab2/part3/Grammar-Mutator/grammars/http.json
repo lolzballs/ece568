@@ -13,9 +13,9 @@
 	
 	"<AUTHORITY>": [["<USERINFO>", "<HOST>"]],
 
-	"<PATH>": [["/", "<DIR>"], ["/hello", "<EXT>", "<DIR>"]],
+	"<PATH>": [["/hello", "<EXT>"], ["/", "<DIR>"]],
 
-  "<EXT>": [[".txt"], [".php"], [".html"]],
+  "<EXT>": [[".txt"], [".php"], [".html"], [".png"], [".jpg"], [".pdf"], [".py"], [".js"], [".svg"]],
 
 	"<DIR>": [[], ["<CHAR>", "/", "<DIR>"]],
 	
