@@ -1,0 +1,21 @@
+#Benjamin Cheng, 1004838045, benjamin.cheng@mail.utoronto.ca
+#Itta Kato, 1009764373, itta.kato@mail.utoronto.ca
+
+
+part1 - Program Fuzzing:
+We used strings target command to inspect the strings. Since the
+strings were "meaningful", we chose: password, fuzzing, security, crash_input,
+ECE568, and shellcode.
+
+part2 - Library Fuzzing:
+For task1, we opened the input file and obtained the file size using fstat. Then,
+we allocated memory to buffer and copied file contents to there. Lastly, we called
+ip_parse using the file size and created buffer.
+For task2, we first cast new_buf to a pointer of struct iphdr (from header file netinet/ip.h) to 
+access IP fields easier. We set the checksum field to 0, and then computed the valid checksum. Lastly,
+we put the computed checksum to new_buf.
+
+part3 - Web Server Fuzzing:
+
+
+
