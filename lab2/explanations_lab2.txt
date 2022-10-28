@@ -16,6 +16,11 @@ access IP fields easier. We set the checksum field to 0, and then computed the v
 we put the computed checksum to new_buf.
 
 part3 - Web Server Fuzzing:
+For task1, we set the lighttpd port to 8080. In each iteration of the AFL_LOOP,
+we open a TCP socket connecting to localhost:8080, write the buffer from AFL.
+After writing, we shutdown the socket for writing, and read the entire response
+from the server. Finally we closed the socket.
 
-
-
+For task2, we edited the http grammar to include more combinations of valid HTTP
+requests. For example, we made the Host: field able to be any <IP>:<PORT>
+combination, and the HTTP version string <CHAR>.<CHAR>.
