@@ -23,4 +23,5 @@ from the server. Finally we closed the socket.
 
 For task2, we edited the http grammar to include more combinations of valid HTTP
 requests. For example, we made the Host: field able to be any <IP>:<PORT>
-combination, and the HTTP version string <CHAR>.<CHAR>.
+combination, and the HTTP version string <CHAR>.<CHAR>. Over 6 runs, we were
+able to achieve an average coverage of 7.6%, with a min of 7.5% and max of 7.72%.
