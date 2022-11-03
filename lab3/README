@@ -24,3 +24,7 @@ form which sends a GET request with the credit card number on submit.
 	});
 	form.input2.value = '000';
 </script>
+
+Part 3 Explanation:
+The message field is rendered without proper escaping, so HTML can be injected
+that will be rendered by users browsers when viewing the message.
