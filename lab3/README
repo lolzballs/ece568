@@ -28,3 +28,8 @@ form which sends a GET request with the credit card number on submit.
 Part 3 Explanation:
 The message field is rendered without proper escaping, so HTML can be injected
 that will be rendered by users browsers when viewing the message.
+
+Part 4 Explanation:
+The CONFIRM button on the prompt simply creates another GET request with the
+transfer parameter set to CONFIRMED. We add a script to the original code which
+sends off this request after the browser has tried to load the original image.
