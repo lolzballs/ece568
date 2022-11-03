@@ -1,0 +1,7 @@
+#Benjamin Cheng, 1004838045, benjamin.cheng@mail.utoronto.ca
+#Itta Kato, 1009764373, itta.kato@mail.utoronto.ca
+
+Part 1 Explanation:
+A form is injected with username, password, and a login field. A script is added
+which adds an event listener to the submit event of the form, which then sends
+a GET request to the required URL with the contents of the form.

