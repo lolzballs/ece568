@@ -33,3 +33,9 @@ Part 4 Explanation:
 The CONFIRM button on the prompt simply creates another GET request with the
 transfer parameter set to CONFIRMED. We add a script to the original code which
 sends off this request after the browser has tried to load the original image.
+
+Part 5 Explanation:
+Since the attacking JS and the transfer page with the CSRF token live on the
+same domain, a JS request to the main transfer screen can read the token from
+the transfer page. A request is made to this page to retrieve the token, and
+another request is sent with the transfer amount and token.
