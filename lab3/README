@@ -1,10 +1,12 @@
 #Benjamin Cheng, 1004838045, benjamin.cheng@mail.utoronto.ca
-#Itta Kato, 1009764373, itta.kato@mail.utoronto.ca
 
 Part 1 Explanation:
-A form is injected with username, password, and a login field. A script is added
-which adds an event listener to the submit event of the form, which then sends
-a GET request to the required URL with the contents of the form.
+The contents of the search query is rendered without escaping, allowing HTML
+to be injected in the page. A form is injected with username, password, and a
+login field. The form looks like a normal login form on the page, which would
+be a good phishing vector. A script is also injected which adds an event
+listener to the submit event of the form, which then sends a GET request to the
+required URL with the contents of the form.
 
 Part 2 Explanation:
 The server does input validation for the three digit access code. If it is
