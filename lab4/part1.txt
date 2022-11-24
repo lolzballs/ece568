@@ -1,0 +1,5 @@
+1. 128.100.8.48
+2. ns7.utoronto.ca:162.243.71.42
+2. ns2.utoronto.ca:128.100.72.168
+3. ecf-utoronto-ca.mail.protection.outlook.com:104.47.75.164
+3. ecf-utoronto-ca.mail.protection.outlook.com:104.47.75.228
