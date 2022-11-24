@@ -3,7 +3,9 @@ import argparse
 import socket
 from scapy.all import *
 
-# This is going to Proxy in front of the Bind Server
+
+BUF_SIZE = 4096
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -20,3 +22,21 @@ port = args.port
 dns_port = args.dns_port
 # Flag to indicate if the proxy should spoof responses
 SPOOF = args.spoof_response
+
+proxy_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+proxy_sock.bind(('127.0.0.1', port))
+
+origin_addr = None
+
+while True:
+    buf, addr = proxy_sock.recvfrom(BUF_SIZE)
+    if origin_addr is None:
+        origin_addr = addr
+
+    if addr[1] == dns_port:  # recved from dns server
+        proxy_sock.sendto(buf, origin_addr)
+        origin_addr = None
+    elif addr[1] == origin_addr[1]:  # recved from client
+        proxy_sock.sendto(buf, ('127.0.0.1', dns_port))
+    else:
+        raise Exception("received packet from unknown addr {}".format(addr))
