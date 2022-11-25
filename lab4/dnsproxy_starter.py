@@ -37,6 +37,27 @@ while True:
         proxy_sock.sendto(buf, origin_addr)
         origin_addr = None
     elif addr[1] == origin_addr[1]:  # recved from client
+        if SPOOF:
+            parsed_request = DNS(buf)
+            if parsed_request.qd.qname == 'example.com.':
+                response = DNS(id=parsed_request.id,
+                               qr=1,
+                               qd=parsed_request.qd,
+                               an=DNSRR(rrname="example.com.",
+                                        rdata="1.11.111.9",
+                                        type='A'),
+                               ns=(
+                                   DNSRR(rrname="example.com.",
+                                         rdata="ns1.spoof568attacker.net.",
+                                         type='NS') /
+                                   DNSRR(rrname="example.com.",
+                                         rdata="ns2.spoof568attacker.net.",
+                                         type='NS')
+                               ))
+                proxy_sock.sendto(bytes(response), origin_addr)
+                origin_addr = None
+                continue
+
         proxy_sock.sendto(buf, ('127.0.0.1', dns_port))
     else:
         raise Exception("received packet from unknown addr {}".format(addr))
