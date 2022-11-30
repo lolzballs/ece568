@@ -1,0 +1,19 @@
+#Benjamin Cheng, 1004838045, benjamin.cheng@mail.utoronto.ca
+
+Part 1 Explanation:
+To find the IPv4 address I ran the following and looked at the A record in the
+ANSWER section:
+	dig ecf.utoronto.ca
+
+To find the name servers I ran the following and looked at the NS records in
+the ANSWER section and connected them with the glue A records in the ADDITIONAL
+section:
+	dig ecf.utoronto.ca NS
+
+Mail servers were found using:
+	dig ecf.utoronto.ca MX
+The MX record returned in the ANSWER section does not contain an IP, so I
+took the data and resolved it with dig again.
+
+The BIND server returned the same results, and queries were performed by:
+	dig @127.0.0.1 -p <port> <args...>
