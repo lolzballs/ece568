@@ -30,3 +30,13 @@ that client.
 Part 3 Explanation:
 When a query comes in with qname = "example.com.", we immediately send back a
 response with the required A answer, NS authority, and glue records.
+
+Part 4 Explanation:
+The script sends a DNS query for <random>.example.com to the BIND resolver.
+It immediately floods the BIND query port with spoofed responses. All spoofed
+responses are identical except for the tx id which is brute-forced from 0 to
+256. The spoofed respones are authoritative for <random>.example.com, while
+also provided the authority NS records. If the tx id is guessed correctly
+before the real NS responds, the BIND server will use the spoofed request and
+its cache will be poisoned. The script detects this when BIND responds with the
+spoofed A record. The script will repeat until the attack is successful.
