@@ -26,3 +26,7 @@ using this identifier as the key, before forwarding the request to the server.
 When the server replies, the queried domain and id are extracted to lookup the
 client address from when the query originated, and the response is forwarded to
 that client.
+
+Part 3 Explanation:
+When a query comes in with qname = "example.com.", we immediately send back a
+response with the required A answer, NS authority, and glue records.
