@@ -17,3 +17,12 @@ took the data and resolved it with dig again.
 
 The BIND server returned the same results, and queries were performed by:
 	dig @127.0.0.1 -p <port> <args...>
+
+Part 2 Explanation:
+This is some simple socket programming. In order to multiplex multiple requests,
+a tuple of (request domain, query id) is used to identify a request/response.
+When a query comes from a client, the client's address is saved in a dictionary
+using this identifier as the key, before forwarding the request to the server.
+When the server replies, the queried domain and id are extracted to lookup the
+client address from when the query originated, and the response is forwarded to
+that client.
